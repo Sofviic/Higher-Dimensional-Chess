@@ -127,8 +127,9 @@ namespace _3DChess {
 		}
 		private void ChessBoard_MouseUp(object sender, MouseEventArgs e) {
 			Point loc = Indices((PictureBox)sender);
-			Point Mouse = new Point(loc.X * p.Size.Width / c + e.X, loc.Y * p.Size.Height / r + e.Y);
-			ChessBoardUndrag(loc.X, loc.Y, Mouse.X, Mouse.Y);
+			Point Mouse = p.PointToClient(Cursor.Position);
+			Point trueLoc = Indices(Mouse);
+			ChessBoardUndrag(trueLoc.X, trueLoc.Y, Mouse.X, Mouse.Y);
 		}
 		private void ChessBoard_MouseDown(object sender, MouseEventArgs e) {
 			Point loc = Indices((PictureBox)sender);
@@ -142,9 +143,9 @@ namespace _3DChess {
 			ChessBoardMove(Mouse.X, Mouse.Y);
 		}
 		private Point Indices(PictureBox pb) => new Point(pb.Location.X * c / p.Size.Width, pb.Location.Y * r / p.Size.Height);
-		private Point Indices(int x, int y) => new Point(x * c / p.Size.Width, y * r / p.Size.Height);
+		private Point Indices(Point pos) => new Point(pos.X * c / p.Size.Width, pos.Y * r / p.Size.Height);
 		public void ChessBoardClick(int x, int y) {
-			textBox.Text = string.Format("({0}, {1})", x, y);
+			textBox.Text = string.Format($"({x}, {y})");
 			ClearSelection();
 			cells[y, x].selection = sel;
 			if(!(cells[y, x].item is null || cells[y, x].item.p == P.NA)) {
@@ -154,8 +155,14 @@ namespace _3DChess {
 			Redraw();
 		}
 		public void ChessBoardUndrag(int x, int y, int mx, int my) {
-			holdp = (-1, -1);
-			Redraw();
+			if(holdp != (-1, -1)) {
+				if(!(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x,y))){
+					cells[y, x].item = cells[holdp.Item2, holdp.Item1].item;
+					cells[holdp.Item2, holdp.Item1].item = null;
+				}
+				holdp = (-1, -1);
+				Redraw();
+			}
 		}
 		public void ChessBoardDrag(int x, int y, int mx, int my) {
 			holdp = (x, y);

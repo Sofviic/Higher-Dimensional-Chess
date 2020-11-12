@@ -19,6 +19,15 @@ namespace _3DChess {
 			hasMoved = false;
 			this.royal = royal;
 		}
+		public ChessItem(ChessItem other) {
+			img = other.img;
+			p = other.p;
+			pc = other.pc;
+			hasMoved = other.hasMoved;
+			board = other.board;
+			royal = other.royal;
+		}
+		public ChessItem Clone() => new ChessItem(this); 
 
 		//======================================================================================================================================================================MOVMENT
 		public (int, int)[] Movement(int x, int y) {
