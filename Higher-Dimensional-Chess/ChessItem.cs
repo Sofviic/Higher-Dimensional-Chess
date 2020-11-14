@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace _3DChess {
 	class ChessItem {
@@ -29,7 +30,8 @@ namespace _3DChess {
 		}
 		public ChessItem Clone() => new ChessItem(this); 
 
-		//======================================================================================================================================================================MOVMENT
+		//======================================================================================================================================================================OLD-MOVMENT
+		/*
 		public (int, int)[] Movement(int x, int y) {
 			return
 				p == ChessBoard.P.WP || p == ChessBoard.P.BP ? PawnMovement(x, y) :
@@ -90,8 +92,72 @@ namespace _3DChess {
 						res.Add((i, j));
 			return res.ToArray();
 		}
+		*/
+		//======================================================================================================================================================================NEW-MOVMENT
+		public (int, int)[] Movement(int x, int y) {
+			return
+				p == ChessBoard.P.WP || p == ChessBoard.P.BP ? PawnMovement(x, y) :
+				p == ChessBoard.P.WN || p == ChessBoard.P.BN ? KnightMovement(x, y) :
+				p == ChessBoard.P.WK || p == ChessBoard.P.BK ? KingMovement(x, y) :
+				p == ChessBoard.P.WB || p == ChessBoard.P.BB ? BishopMovement(x, y) :
+				p == ChessBoard.P.WR || p == ChessBoard.P.BR ? RookMovement(x, y) :
+				p == ChessBoard.P.WQ || p == ChessBoard.P.BQ ? QueenMovement(x, y) :
+				new (int, int)[0];
+		}
 
-		//======================================================================================================================================================================MOVMENT-CHECKS
+		private (int, int)[] PawnMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(Movable(pc == ChessBoard.PColour.B ? p1Move : p1Move.Neg(), (x, y), (i, j)) ||
+					 !hasMoved && Movable(pc == ChessBoard.PColour.B ? p2Move : p2Move.Neg(), (x, y), (i, j))
+						)
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+		private (int, int)[] KnightMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(Movable(NMove, (x, y), (i, j)))
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+		private (int, int)[] KingMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(Movable(RMove.Concat(BMove), (x, y), (i, j)))
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+		private (int, int)[] BishopMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(MovableRepeat(board, board.radius, BMove, (x, y), (i, j)))
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+		private (int, int)[] RookMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(MovableRepeat(board, board.radius, RMove, (x, y), (i, j)))
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+		private (int, int)[] QueenMovement(int x, int y) {
+			List<(int, int)> res = new List<(int, int)>();
+			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)
+					if(MovableRepeat(board, board.radius, RMove.Concat(BMove), (x, y), (i, j)))
+						res.Add((i, j));
+			return res.ToArray();
+		}
+
+
+		//======================================================================================================================================================================OLD-MOVMENT-CHECKS
+		/*
 		private static bool PawnOnceMovable(int sx, int sy, int dx, int dy, bool posY) => dx == sx && dy == sy + (posY ? 1 : -1);
 		private static bool PawnTwiceMovable(int sx, int sy, int dx, int dy, bool posY) => dx == sx && (dy == sy + (posY ? 1 : -1) || dy == sy + (posY ? 2 : -2));
 
@@ -108,8 +174,24 @@ namespace _3DChess {
 		private static bool RookMovable(int sx, int sy, int dx, int dy) => dx == sx ^ dy == sy;
 
 		private static bool QueenMovable(int sx, int sy, int dx, int dy) => BishopMovable(sx, sy, dx, dy) || RookMovable(sx, sy, dx, dy);
+		*/
+		//======================================================================================================================================================================NEW-MOVMENT-CHECKS
+		private static bool Movable((int, int) m, (int, int) p, (int, int) t) => t == p.Add(m);
+		private static bool Movable(IEnumerable<(int, int)> m, (int, int) p, (int, int) t) => m.Select(x => x.Add(p)).Any(x => x == t);
+		private static bool MovableRepeat(ChessBoard board, int n, (int, int) m, (int, int) p, (int, int) t) => n < 1 ? false : Movable(m, p, t) || MovableRepeat(board, n - 1, m, p, t.Sub(m));
+		private static bool MovableRepeat(ChessBoard board, int n, IEnumerable<(int, int)> m, (int, int) p, (int, int) t) => n < 1 ? false : Movable(m, p, t) || m.Select(x => MovableRepeat(board, n - 1, x, p, t.Sub(x))).Any(z => z);
+
+		(int, int)[] p1Move = new (int, int)[] { (0, 1) };
+		(int, int)[] p2Move = new (int, int)[] { (0, 2) };
+		(int, int)[] pTake = new (int, int)[] { (-1, 1), (1, 1) };
+		(int, int)[] RMove = new (int, int)[] { (0, -1), (-1, 0), (1, 0), (0, 1) };
+		(int, int)[] BMove = new (int, int)[] { (-1, -1), (1, -1), (-1, 1), (1, 1) };
+		(int, int)[] NMove = new (int, int)[] { (-1, -2), (1, -2), (-2, -1), (2, -1), (-2, 1), (2, 1), (-1, 2), (1, 2) };
 
 		//======================================================================================================================================================================BOARD-CHECKS
 		public bool InBoard(int x, int y) => x >= 0 && y >= 0 && x < board.c && y < board.r;
+		public bool InBoard((int, int) p) => p.Item1 >= 0 && p.Item2 >= 0 && p.Item1 < board.c && p.Item2 < board.r;
+		public static bool InBoard(ChessBoard board, int x, int y) => x >= 0 && y >= 0 && x < board.c && y < board.r;
+		public static bool InBoard(ChessBoard board, (int, int) p) => p.Item1 >= 0 && p.Item2 >= 0 && p.Item1 < board.c && p.Item2 < board.r;
 	}
 }

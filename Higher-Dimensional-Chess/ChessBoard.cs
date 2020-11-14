@@ -22,6 +22,7 @@ namespace _3DChess {
 		public PictureBox[,] pbs;
 		public TransparentPictureBox holdpb;
 		public readonly int r, c;
+		public readonly int radius;
 		public readonly NonFlickeringPanel p;
 		public TextBox textBox;
 		public ChessBoard(int r, int c, NonFlickeringPanel p) {
@@ -31,6 +32,7 @@ namespace _3DChess {
 			this.r = r;
 			this.c = c;
 			this.p = p;
+			radius = Math.Max(r, c);
 
 			SetupResources();
 			SetupBoard();
