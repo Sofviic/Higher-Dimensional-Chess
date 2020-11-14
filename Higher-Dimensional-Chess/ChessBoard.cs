@@ -155,8 +155,9 @@ namespace _3DChess {
 			Redraw();
 		}
 		public void ChessBoardUndrag(int x, int y, int mx, int my) {
+			if(holdp != (x, y)) ClearSelection();
 			if(holdp != (-1, -1)) {
-				if(!(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x,y))){
+				if(ChessItem.InBoard(this, x, y) && !(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x,y))){
 					cells[y, x].item = cells[holdp.Item2, holdp.Item1].item;
 					cells[holdp.Item2, holdp.Item1].item = null;
 				}
