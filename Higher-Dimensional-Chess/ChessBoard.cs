@@ -86,7 +86,7 @@ namespace _3DChess {
 		}
 
 		//======================================================================================================================================================================SETUP
-		public void SetupResources(){
+		public void SetupResources() {
 			whiteCell = new Bitmap(@"..\..\Resources\c_White.png");
 			blackCell = new Bitmap(@"..\..\Resources\c_Black.png");
 			pimg[P.WK] = WK = new Bitmap(@"..\..\Resources\p_WK.png");
@@ -112,9 +112,9 @@ namespace _3DChess {
 		}
 		public void SetupBoardCells() {
 			for(int j = 0; j < r; ++j) for(int i = 0; i < c; ++i) {
-				cells[j, i] = new ChessBoardCell((i + j) % 2 == 0 ? whiteCell : blackCell);
-				cells[j, i].nilnilnil = nil;
-			}
+					cells[j, i] = new ChessBoardCell((i + j) % 2 == 0 ? whiteCell : blackCell);
+					cells[j, i].nilnilnil = nil;
+				}
 		}
 		public void SetupBoardItems() {
 			cp = CLASSIC_BOARD;
@@ -159,10 +159,7 @@ namespace _3DChess {
 		public void ChessBoardUndrag(int x, int y, int mx, int my) {
 			if(holdp != (x, y)) ClearSelection();
 			if(holdp != (-1, -1)) {
-				if(ChessItem.InBoard(this, x, y) && !(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x,y))){
-					cells[y, x].item = cells[holdp.Item2, holdp.Item1].item;
-					cells[holdp.Item2, holdp.Item1].item = null;
-				}
+				if(ChessItem.InBoard(this, x, y) && !(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x, y))) MovePieceIfAllowed(holdp, (x, y));
 				holdp = (-1, -1);
 				Redraw();
 			}
@@ -175,17 +172,23 @@ namespace _3DChess {
 			if(holdp == (-1, -1)) return;
 			Redraw(holdp.Item2, holdp.Item1, my, mx, false);
 		}
-		public void ClearSelection(){
+		public void ClearSelection() {
 			for(int j = 0; j < r; ++j) for(int i = 0; i < c; ++i) {
-				cells[j, i].selection = null;
-				cells[j, i].movements = null;
-				cells[j, i].ncaptures = null;
-				cells[j, i].xcaptures = null;
-			}
+					cells[j, i].selection = null;
+					cells[j, i].movements = null;
+					cells[j, i].ncaptures = null;
+					cells[j, i].xcaptures = null;
+				}
 		}
 		//======================================================================================================================================================================MOVMENT
-
-
+		public void MovePiece(Vector2 from, Vector2 to) {
+			if(!ChessItem.InBoard(this, from.x, from.y) || !ChessItem.InBoard(this, to.x, to.y) || cells[from.y, from.x].item is null) return;
+			cells[to.y, to.x].item = cells[from.y, from.x].item;
+			cells[from.y, from.x].item = null;
+		}
+		public void MovePieceIfAllowed(Vector2 from, Vector2 to) {
+			if(cells[from.y, from.x].item.CanMoveTo(from, to)) MovePiece(from, to);
+		}
 
 
 

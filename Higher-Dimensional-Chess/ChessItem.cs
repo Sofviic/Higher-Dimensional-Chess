@@ -28,9 +28,13 @@ namespace _3DChess {
 			board = other.board;
 			royal = other.royal;
 		}
-		public ChessItem Clone() => new ChessItem(this); 
-		
+		public ChessItem Clone() => new ChessItem(this);
+
 		//======================================================================================================================================================================MOVMENT
+		public bool CanMoveTo((int, int) from, (int, int) to) {//TODO: Check Blocks
+			return Movement(from.Item1, from.Item2).Contains(to);
+		}
+
 		public (int, int)[] Movement(int x, int y) {
 			return
 				p == ChessBoard.P.WP || p == ChessBoard.P.BP ? PawnMovement(x, y) :
@@ -51,7 +55,7 @@ namespace _3DChess {
 						res.Add((i, j));
 			return res.ToArray();
 		}
-
+		
 		private (int, int)[] KnightMovement(int x, int y) {
 			List<(int, int)> res = new List<(int, int)>();
 			for(int j = 0; j < board.r; ++j) for(int i = 0; i < board.c; ++i)

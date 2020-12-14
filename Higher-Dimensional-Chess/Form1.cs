@@ -33,5 +33,9 @@ namespace _3DChess {
 				}
 			}
 		}
+
+		private void panel1_Paint(object sender, PaintEventArgs e) {
+
+		}
 	}
 }
