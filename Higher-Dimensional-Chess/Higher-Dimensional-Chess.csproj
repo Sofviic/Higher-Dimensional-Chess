@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitmapFunc.cs" />
+    <Compile Include="ChessEngine.cs" />
     <Compile Include="ExtendFunc.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
