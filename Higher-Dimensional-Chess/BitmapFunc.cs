@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace _3DChess {
 	static class BitmapFunc {
@@ -27,8 +26,21 @@ namespace _3DChess {
 			}
 			return bmp;
 		}
+		/// <summary>
+		/// Add smaller Bitmap b on top of Bitmap a at a certain location.
+		/// </summary>
+		/// <param name="a"></param>
+		/// <param name="b"></param>
+		/// <returns></returns>
+		public static Bitmap Add(this Bitmap a, Bitmap b, Vector2 loc) {
+			Bitmap bmp = new Bitmap(a.Width, a.Height);
+			using(Graphics gfx = Graphics.FromImage(bmp)) {
+				gfx.DrawImage(a, 0, 0);
+				gfx.DrawImage(b, loc.x, loc.y);
+			}
+			return bmp;
+		}
 		public static Bitmap AddSkipNull(this Bitmap a, Bitmap b) => a is null ? (b is null ? null : b) : (b is null ? a : a.Add(b));
-		public static Bitmap AddSkipNull(this Bitmap a, ChessItem b) => a is null ? (b is null ? null : b.img) : (b is null ? a : a.Add(b.img));
 	}
 }
 

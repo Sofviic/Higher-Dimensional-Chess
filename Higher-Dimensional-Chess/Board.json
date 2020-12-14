@@ -1,0 +1,14 @@
+{
+	"Cells": {
+		"W": "Resources\\c_White.png",
+		"B": "Resources\\c_Black.png"
+	},
+	"Selection": {
+		"Movement": "Resources\\s_mov.png",
+		"Captures": "Resources\\s_cap.png"
+	},
+	"Help": {
+		"Checks": "TODO",
+		"Past": "TODO"
+	}
+}

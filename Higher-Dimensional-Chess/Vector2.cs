@@ -8,10 +8,15 @@ namespace _3DChess {
 		public static implicit operator (int, int) (Vector2 x) => (x.x, x.y);
 		public static implicit operator Point(Vector2 x) => new Point(x.x, x.y);
 		public static implicit operator Vector2(Point x) => new Vector2(x.X, x.Y);
+		public static implicit operator Size(Vector2 x) => new Size(x.x, x.y);
+		public static implicit operator Vector2(Size x) => new Vector2(x.Width, x.Height);
 
 		public static Vector2 operator +(Vector2 a, Vector2 b) => a.Add(b);
 		public static Vector2 operator -(Vector2 a, Vector2 b) => a.Sub(b);
+		public static Vector2 operator *(Vector2 a, Vector2 b) => a.Times(b);
+		public static Vector2 operator /(Vector2 a, Vector2 b) => a.Over(b);
 		public static Vector2 operator *(Vector2 a, int b) => a.Times(b);
+		public static Vector2 operator /(Vector2 a, int b) => a.Over(b);
 		public static Vector2 operator -(Vector2 a) => a.Neg();
 		public static bool operator ==(Vector2 a, Vector2 b) => a.x == b.x && a.y == b.y;
 		public static bool operator !=(Vector2 a, Vector2 b) => a.x != b.x || a.y != b.y;
@@ -22,7 +27,10 @@ namespace _3DChess {
 		public Vector2 AddSub(Vector2 b) => (x + b.x, y - b.y);
 		public Vector2 SubAdd(Vector2 b) => (x - b.x, y + b.y);
 		public Vector2 Sub(Vector2 b) => (x - b.x, y - b.y);
+		public Vector2 Times(Vector2 b) => (x * b.x, y * b.y);
+		public Vector2 Over(Vector2 b) => (x / b.x, y / b.y);
 		public Vector2 Times(int b) => (x * b, y * b);
+		public Vector2 Over(int b) => (x / b, y / b);
 		public Vector2 Neg() => (-x, -y);
 
 		public override bool Equals(object obj) => obj as Vector2 != null && x == (obj as Vector2).x && y == (obj as Vector2).y;

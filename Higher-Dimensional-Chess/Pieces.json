@@ -1,0 +1,87 @@
+[
+	{
+		"ID": "K",
+		"Name": "King",
+		"Royal": true,
+		"Movement": {
+			"Hops": 1,
+			"Move": [
+				[ -1, -1 ],
+				[ -1, 0 ],
+				[ -1, 1 ],
+				[ 0, -1 ],
+				[ 0, 1 ],
+				[ 1, -1 ],
+				[ 1, 0 ],
+				[ 1, 1 ]
+			],
+			"CaptureWithMove": true,
+			"FirstMove": false
+		},
+		"Start": {
+			"W": [ 5, 0 ],
+			"B": [ 5, 8 ]
+		},
+		"Image": {
+			"W": "Resources\\p_WK.png",
+			"B": "Resources\\p_BK.png"
+		}
+	},
+	{
+		"ID": "Q",
+		"Name": "Queen",
+		"Royal": false,
+		"Movement": {
+			"Hops": 9999,
+			"Move": [
+				[ -1, -1 ],
+				[ -1, 0 ],
+				[ -1, 1 ],
+				[ 0, -1 ],
+				[ 0, 1 ],
+				[ 1, -1 ],
+				[ 1, 0 ],
+				[ 1, 1 ]
+			],
+			"CaptureWithMove": true,
+			"FirstMove": false
+		},
+		"Start": {
+			"W": [ 4, 0 ],
+			"B": [ 4, 8 ]
+		},
+		"Image": {
+			"W": "Resources\\p_WQ.png",
+			"B": "Resources\\p_BQ.png"
+		}
+	},
+	{
+		"ID": "_",
+		"Name": "Pawn",
+		"Royal": false,
+		"Movement": {
+			"Hops": 1,
+			"Move": [
+				[ 0, 1 ]
+			],
+			"CaptureWithMove": false,
+			"Capture": [
+				[ -1, 1 ],
+				[ 1, 1 ]
+			],
+			"FirstMove": true,
+			"FHops": 2,
+			"FMove": [
+				[ 0, 1 ]
+			]
+		},
+		"Start": {
+			"W": [ 4, 1 ],
+			"B": [ 4, 7 ]
+		},
+		"Image": {
+			"W": "Resources\\p_WP.png",
+			"B": "Resources\\p_BP.png"
+		}
+	}
+]
