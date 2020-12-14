@@ -7,31 +7,7 @@ namespace _3DChess {
 		public Form1() {
 			InitializeComponent();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-			textBox1.GotFocus += UnsetFocus;
-		}
-
-		private void UnsetFocus(object sender, EventArgs e) => ((TextBox)sender).Parent.Focus();
-		protected override void OnPaintBackground(PaintEventArgs e) {
-			base.OnPaintBackground(e);
-			Graphics g = e.Graphics;
-			if(Parent != null) {
-				int index = Parent.Controls.GetChildIndex(this);
-				for(int i = Parent.Controls.Count - 1; i > index; i--) {
-					Control c = Parent.Controls[i];
-					if(c.Bounds.IntersectsWith(Bounds) && c.Visible) {
-						Bitmap bmp = new Bitmap(c.Width, c.Height, g);
-						c.DrawToBitmap(bmp, c.ClientRectangle);
-						g.TranslateTransform(c.Left - Left, c.Top - Top);
-						g.DrawImageUnscaled(bmp, Point.Empty);
-						g.TranslateTransform(Left - c.Left, Top - c.Top);
-						bmp.Dispose();
-					}
-				}
-			}
-		}
-
-		private void panel1_Paint(object sender, PaintEventArgs e) {
-
+			
 		}
 	}
 }
