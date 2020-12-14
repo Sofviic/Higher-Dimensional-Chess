@@ -16,6 +16,7 @@ namespace _3DChess {
 		public Dictionary<string, Bitmap> piecesDict { get; private set; }
 		public Dictionary<string, Bitmap> texturDict { get; private set; }
 
+		//======================================================================================================================================================================INIT
 		public ChessBoard current { get; private set; }
 		public ChessEngine(Vector2 boardSize, string pieceJSON, string textureJSON) {
 			this.boardSize = boardSize;
@@ -43,9 +44,13 @@ namespace _3DChess {
 			return d;
 		}
 
+		//======================================================================================================================================================================OTHER
 		public ChessBoard SetupBoard() {
 			ChessBoard c = new ChessBoard(boardSize);
-			c.pieces[1, 1] = "KW";
+			foreach(dynamic piece in pieceRules) {
+				foreach(Vector2 v in ParseVector2Array(piece["Start"]["W"])) c.pieces[v.x, v.y] = pieces[v.x, v.y] = piece["ID"].ToString() + "W";
+				foreach(Vector2 v in ParseVector2Array(piece["Start"]["B"])) c.pieces[v.x, v.y] = pieces[v.x, v.y] = piece["ID"].ToString() + "B";
+			}
 			return c;
 		}
 		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
@@ -54,6 +59,12 @@ namespace _3DChess {
 
 		public Bitmap DrawCurrentBoard(Vector2 size) {
 			return current.DrawWith(piecesDict, texturDict, size);
+		}
+
+		public Vector2[] ParseVector2Array(dynamic x){
+			List<Vector2> res = new List<Vector2>();
+			foreach(dynamic y in x) res.Add((y[0], y[1]));
+			return res.ToArray();
 		}
 	}
 }
