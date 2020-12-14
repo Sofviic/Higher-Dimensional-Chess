@@ -12,22 +12,19 @@ namespace _3DChess {
 		string[,] pieces;
 		dynamic pieceRules;
 		dynamic textures;
+
+		public Dictionary<string, Bitmap> piecesDict { get; private set; }
+		public Dictionary<string, Bitmap> texturDict { get; private set; }
+
 		public ChessBoard current { get; private set; }
 		public ChessEngine(Vector2 boardSize, string pieceJSON, string textureJSON) {
 			this.boardSize = boardSize;
 			pieces = new string[boardSize.x, boardSize.y];
 			pieceRules = JsonConvert.DeserializeObject(File.ReadAllText(pieceJSON));
 			textures = JsonConvert.DeserializeObject(File.ReadAllText(textureJSON));
+			piecesDict = PiecesDictionary();
+			texturDict = BoardDictionary();
 			current = SetupBoard();
-		}
-		public ChessBoard SetupBoard() {
-			return new ChessBoard(boardSize);
-		}
-		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
-			throw new Exception("TODO");
-		}
-		public Bitmap DrawCurrentBoard(Vector2 size){
-			return current.DrawWith(PiecesDictionary(), BoardDictionary(), size);
 		}
 		public Dictionary<string, Bitmap> PiecesDictionary() {
 			Dictionary<string, Bitmap> d = new Dictionary<string, Bitmap>();
@@ -44,6 +41,19 @@ namespace _3DChess {
 			d.Add("CW", (Bitmap)Image.FromFile(path + textures["Cells"]["W"].ToString()));
 			d.Add("CB", (Bitmap)Image.FromFile(path + textures["Cells"]["B"].ToString()));
 			return d;
+		}
+
+		public ChessBoard SetupBoard() {
+			ChessBoard c = new ChessBoard(boardSize);
+			c.pieces[1, 1] = "KW";
+			return c;
+		}
+		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
+			throw new Exception("TODO");
+		}
+
+		public Bitmap DrawCurrentBoard(Vector2 size) {
+			return current.DrawWith(piecesDict, texturDict, size);
 		}
 	}
 }

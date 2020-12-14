@@ -18,10 +18,10 @@ namespace _3DChess {
 			this.size = size;
 		}
 		public Bitmap DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize) {
-			Bitmap res = new Bitmap(bsize.x, bsize.y);
+			Bitmap res = BitmapFunc.SolidColour(100, 0, 0, bsize.x, bsize.y);
 			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) {
-					res.Add(bboard[i + j % 2 == 0 ? "CB" : "CW"], (i, j) * bsize / size);
-					if(!(pieces[i, j] is null) && pieces[i, j] != string.Empty && bpieces.ContainsKey(pieces[i, j])) res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size);
+					res = res.Add(bboard[(i + j) % 2 == 0 ? "CB" : "CW"], (i, j) * bsize / size);
+					if(!(pieces[i, j] is null) && pieces[i, j] != string.Empty && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
 				}
 			return res;
 		}
