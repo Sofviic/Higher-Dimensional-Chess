@@ -4,14 +4,10 @@ using System.Windows.Forms;
 
 namespace _3DChess {
 	public partial class Form1 : Form {
-		ChessBoard chess;
 		public Form1() {
 			InitializeComponent();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
 			textBox1.GotFocus += UnsetFocus;
-			chess = new ChessBoard(8, 8, panel1);
-			chess.Draw();
-			chess.textBox = textBox1;
 		}
 
 		private void UnsetFocus(object sender, EventArgs e) => ((TextBox)sender).Parent.Focus();
