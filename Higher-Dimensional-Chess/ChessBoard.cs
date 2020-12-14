@@ -18,7 +18,7 @@ namespace _3DChess {
 		P[,] cp;
 		public Dictionary<P, Bitmap> pimg = new Dictionary<P, Bitmap>();
 		ChessBoardCell[,] cells;
-		(int, int) holdp = (-1, -1);
+		Vector2 holdp = (-1, -1);
 		public PictureBox[,] pbs;
 		public TransparentPictureBox holdpb;
 		public readonly int r, c;
@@ -151,15 +151,15 @@ namespace _3DChess {
 			ClearSelection();
 			cells[y, x].selection = sel;
 			if(!(cells[y, x].item is null || cells[y, x].item.p == P.NA)) {
-				(int, int)[] possibleMoves = cells[y, x].item.Movement(x, y);
-				foreach((int, int) index in possibleMoves) cells[index.Item2, index.Item1].movements = mov;
+				Vector2[] possibleMoves = cells[y, x].item.Movement(x, y);
+				foreach(Vector2 index in possibleMoves) cells[index.y, index.x].movements = mov;
 			}
 			Redraw();
 		}
 		public void ChessBoardUndrag(int x, int y, int mx, int my) {
 			if(holdp != (x, y)) ClearSelection();
 			if(holdp != (-1, -1)) {
-				if(ChessItem.InBoard(this, x, y) && !(cells[holdp.Item2, holdp.Item1].item is null || holdp == (x, y))) MovePieceIfAllowed(holdp, (x, y));
+				if(ChessItem.InBoard(this, x, y) && !(cells[holdp.y, holdp.x].item is null || holdp == (x, y))) MovePieceIfAllowed(holdp, (x, y));
 				holdp = (-1, -1);
 				Redraw();
 			}
@@ -170,7 +170,7 @@ namespace _3DChess {
 		}
 		public void ChessBoardMove(int mx, int my) {
 			if(holdp == (-1, -1)) return;
-			Redraw(holdp.Item2, holdp.Item1, my, mx, false);
+			Redraw(holdp.y, holdp.x, my, mx, false);
 		}
 		public void ClearSelection() {
 			for(int j = 0; j < r; ++j) for(int i = 0; i < c; ++i) {
