@@ -9,17 +9,19 @@ using System.Windows.Forms;
 namespace _3DChess {
 	class ChessEngine {
 		public readonly Vector2 boardSize;
+		string[,] pieces;
 		bool[,] changes;
 		dynamic pieceRules;
 		dynamic textures;
 
-		public Dictionary<string, (Bitmap, Vector2[], int)> piecesDict { get; private set; }
+		public Dictionary<string, Bitmap> piecesDict { get; private set; }
 		public Dictionary<string, Bitmap> texturDict { get; private set; }
 
 		//======================================================================================================================================================================INIT
 		public ChessBoard current { get; private set; }
 		public ChessEngine(Vector2 boardSize, string pieceJSON, string textureJSON) {
 			this.boardSize = boardSize;
+			pieces = new string[boardSize.x, boardSize.y];
 			changes = new bool[boardSize.x, boardSize.y];
 			pieceRules = JsonConvert.DeserializeObject(File.ReadAllText(pieceJSON));
 			textures = JsonConvert.DeserializeObject(File.ReadAllText(textureJSON));
@@ -27,12 +29,12 @@ namespace _3DChess {
 			texturDict = BoardDictionary();
 			current = SetupBoard();
 		}
-		public Dictionary<string, (Bitmap,Vector2[],int)> PiecesDictionary() {
-			Dictionary<string, (Bitmap, Vector2[], int)> d = new Dictionary<string, (Bitmap, Vector2[], int)>();
+		public Dictionary<string, Bitmap> PiecesDictionary() {
+			Dictionary<string, Bitmap> d = new Dictionary<string, Bitmap>();
 			string path = Path.Combine(Application.StartupPath, @"..\..\");
 			foreach(dynamic piece in pieceRules) {
-				d.Add(piece["ID"].ToString() + "W", ((Bitmap)Image.FromFile(path + piece["Image"]["W"].ToString()), MathFunc.Neg((Vector2[])ParseVector2Array(piece["Movement"]["Move"])), (int)piece["Movement"]["Hops"]));
-				d.Add(piece["ID"].ToString() + "B", ((Bitmap)Image.FromFile(path + piece["Image"]["B"].ToString()), (Vector2[])ParseVector2Array(piece["Movement"]["Move"]), (int)piece["Movement"]["Hops"]));
+				d.Add(piece["ID"].ToString() + "W", (Bitmap)Image.FromFile(path + piece["Image"]["W"].ToString()));
+				d.Add(piece["ID"].ToString() + "B", (Bitmap)Image.FromFile(path + piece["Image"]["B"].ToString()));
 			}
 			return d;
 		}
@@ -48,29 +50,13 @@ namespace _3DChess {
 		public ChessBoard SetupBoard() {
 			ChessBoard c = new ChessBoard(boardSize);
 			foreach(dynamic piece in pieceRules) {
-				foreach(Vector2 v in ParseVector2Array(piece["Start"]["W"])) c.pieces[v.x, v.y] = piece["ID"].ToString() + "W";
-				foreach(Vector2 v in ParseVector2Array(piece["Start"]["B"])) c.pieces[v.x, v.y] = piece["ID"].ToString() + "B";
+				foreach(Vector2 v in ParseVector2Array(piece["Start"]["W"])) c.pieces[v.x, v.y] = pieces[v.x, v.y] = piece["ID"].ToString() + "W";
+				foreach(Vector2 v in ParseVector2Array(piece["Start"]["B"])) c.pieces[v.x, v.y] = pieces[v.x, v.y] = piece["ID"].ToString() + "B";
 			}
 			return c;
 		}
 		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
-			string piece = GetCell(from);
-			ChessBoard res = board;
-			if(IsPiece(piece)) {
-				foreach(Vector2 move in piecesDict[piece].Item2) {
-					if(from + move == to) {
-						res = res.SetCell(from, null);
-						res = res.SetCell(to, piece);
-						Changed(from);
-						Changed(to);
-						return res;
-					}
-				}
-			}
-			return res;
-		}
-		public ChessBoard MakeMoveFromHold(ChessBoard board, Vector2 to) {
-			return MakeMove(board, held, to);
+			throw new Exception("TODO");
 		}
 		public ChessBoard SetCell(ChessBoard board, Vector2 cell, string piece) {
 			return board.SetCell(cell, piece);
@@ -81,21 +67,19 @@ namespace _3DChess {
 			Changed(from);
 			Changed(to);
 		}
-		public void MakeMoveFromHold(Vector2 to) {
-			current = MakeMoveFromHold(current, to);
-		}
 		public void SetCell(Vector2 cell, string piece) {
+			pieces[cell.x, cell.y] = piece;
 			current = SetCell(current, cell, piece);
 			Changed(cell);
 		}
-		public string GetCell(Vector2 cell) => current.pieces[cell.x, cell.y];
+		public string GetCell(Vector2 cell) => pieces[cell.x, cell.y];
 
 		bool holding = false;
 		Vector2 held;
 		public string Hold(Vector2 cell) {
 			holding = true;
 			held = cell;
-			return current.pieces[cell.x, cell.y];
+			return pieces[cell.x, cell.y];
 		}
 		public void Unhold() => holding = false;
 
@@ -106,18 +90,15 @@ namespace _3DChess {
 		Bitmap old;
 
 		public void DumpDrawCache() => drawn = false;
-		public void DrawBoard(ChessBoard board, Vector2 size, out Bitmap img) {
+		public Bitmap DrawBoard(ChessBoard board, Vector2 size) {
 			if(!drawn) {
 				drawn = true;
-				board.DrawWith(piecesDict.StripDictionary(), texturDict, size, out img);
-				old = img;
-				return;
+				return old = board.DrawWith(piecesDict, texturDict, size);
 			}
-			if(holding) board.DrawWith(piecesDict.StripDictionary(), texturDict, size, old, changes, held, out img);
-			else board.DrawWith(piecesDict.StripDictionary(), texturDict, size, old, changes, out img);
+			return holding ? board.DrawWith(piecesDict, texturDict, size, old, changes, held) : board.DrawWith(piecesDict, texturDict, size, old, changes);
 		}
-		public void DrawCurrentBoard(Vector2 size, out Bitmap img) {
-			DrawBoard(current, size, out img);
+		public Bitmap DrawCurrentBoard(Vector2 size) {
+			return DrawBoard(current, size);
 		}
 		private void Changed(Vector2 cell) => changes[cell.x, cell.y] = true;
 

@@ -21,12 +21,12 @@ namespace _3DChess {
 		bool holding = false;
 		string heldPiece = "";
 
-		private void RedrawBoard() {
-			eng.DrawCurrentBoard((1200, 1200), out board);
+		private Bitmap RedrawBoard() {
+			return board = eng.DrawCurrentBoard((1200, 1200));
 		}
 
 		private void Form1_MouseDown(object sender, MouseEventArgs e) {
-			if(!holding && eng.IsPiece(eng.GetCell(GetCellFromPos(e.Location)))) {
+			if(eng.IsPiece(eng.GetCell(GetCellFromPos(e.Location)))) {
 				holding = true;
 				heldPiece = eng.Hold(GetCellFromPos(e.Location));
 				RedrawBoard();
@@ -36,7 +36,6 @@ namespace _3DChess {
 
 		private void Form1_MouseUp(object sender, MouseEventArgs e) {
 			holding = false;
-			eng.MakeMoveFromHold(GetCellFromPos(e.Location));
 			eng.Unhold();
 			RedrawBoard();
 			Refresh();
@@ -44,9 +43,7 @@ namespace _3DChess {
 
 		private void Form1_MouseMove(object sender, MouseEventArgs e) {
 			if(holding) {
-				if(!(board is null)) board.Dispose();
-				RedrawBoard();
-				board = board.Add(eng.piecesDict[heldPiece].Item1, e.Location, true);
+				board = RedrawBoard().Add(eng.piecesDict[heldPiece], e.Location, true);
 				Refresh();
 			}
 		}
