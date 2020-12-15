@@ -151,6 +151,7 @@
     <Content Include="Resources\s_mov.png" />
     <Content Include="Resources\s_nil.png" />
     <Content Include="Resources\s_sel.png" />
+    <Content Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>

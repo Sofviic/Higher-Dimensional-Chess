@@ -1,0 +1,10 @@
+﻿meta
+1. Movement
+	1.1. Add piece movement
+	1.1. Add dragging
+2. Rules
+	2.1. Add Movement validitity-checking
+	2.2. Add Checking
+3. Game Ending
+	3.1. Add stalemate
+	3.2. Add checkmates
