@@ -22,7 +22,17 @@ namespace _3DChess {
 			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) {
 					try {
 						res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
-					}catch{ }
+					} catch { }
+					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
+				}
+			return res;
+		}
+		public Bitmap DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize, Bitmap old, bool[,] cells) {
+			Bitmap res = old;
+			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i,j]) {
+					try {
+						res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
+					} catch { }
 					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
 				}
 			return res;

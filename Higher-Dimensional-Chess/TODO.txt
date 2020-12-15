@@ -8,3 +8,6 @@
 3. Game Ending
 	3.1. Add stalemate
 	3.2. Add checkmates
+
+A. Graphics
+	A.1. Responsiveness /

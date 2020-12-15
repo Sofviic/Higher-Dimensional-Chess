@@ -10,6 +10,7 @@ namespace _3DChess {
 	class ChessEngine {
 		public readonly Vector2 boardSize;
 		string[,] pieces;
+		bool[,] changes;
 		dynamic pieceRules;
 		dynamic textures;
 
@@ -21,6 +22,7 @@ namespace _3DChess {
 		public ChessEngine(Vector2 boardSize, string pieceJSON, string textureJSON) {
 			this.boardSize = boardSize;
 			pieces = new string[boardSize.x, boardSize.y];
+			changes = new bool[boardSize.x, boardSize.y];
 			pieceRules = JsonConvert.DeserializeObject(File.ReadAllText(pieceJSON));
 			textures = JsonConvert.DeserializeObject(File.ReadAllText(textureJSON));
 			piecesDict = PiecesDictionary();
@@ -62,10 +64,13 @@ namespace _3DChess {
 
 		public void MakeMove(Vector2 from, Vector2 to){
 			current = MakeMove(current, from, to);
+			Changed(from);
+			Changed(to);
 		}
 		public void SetCell(Vector2 cell, string piece) {
 			pieces[cell.x, cell.y] = piece;
 			current = SetCell(current, cell, piece);
+			Changed(cell);
 		}
 		public string GetCell(Vector2 cell) {
 			return pieces[cell.x, cell.y];
@@ -73,12 +78,21 @@ namespace _3DChess {
 		public bool IsPiece(string id) => !IsNotPiece(id);
 		public bool IsNotPiece(string id) => id is null || id == string.Empty;
 
+		bool drawn = false;
+		Bitmap old;
+
+		public void DumpDrawCache() => drawn = false;
 		public Bitmap DrawBoard(ChessBoard board, Vector2 size) {
-			return board.DrawWith(piecesDict, texturDict, size);
+			if(!drawn) {
+				drawn = true;
+				return old = board.DrawWith(piecesDict, texturDict, size);
+			}
+			return board.DrawWith(piecesDict, texturDict, size, old, changes);
 		}
 		public Bitmap DrawCurrentBoard(Vector2 size) {
 			return DrawBoard(current, size);
 		}
+		private void Changed(Vector2 cell) => changes[cell.x, cell.y] = true;
 
 		public Vector2[] ParseVector2Array(dynamic x) {
 			List<Vector2> res = new List<Vector2>();
