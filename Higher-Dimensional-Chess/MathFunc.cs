@@ -13,5 +13,7 @@ namespace _3DChess {
 		public static IEnumerable<Vector2> Sub(this IEnumerable<Vector2> a, Vector2 b) => a.Select(x => x.Sub(b));
 		public static IEnumerable<Vector2> Times(this IEnumerable<Vector2> a, int b) => a.Select(x => x.Times(b));
 		public static IEnumerable<Vector2> Neg(this IEnumerable<Vector2> a) => a.Select(x => x.Neg());
+
+		public static int Mod(this int a, int n) => ((a % n) + n) % n;
 	}
 }

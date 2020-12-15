@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace _3DChess {
 	class ChessEngine {
-		Vector2 boardSize;
+		public readonly Vector2 boardSize;
 		string[,] pieces;
 		dynamic pieceRules;
 		dynamic textures;
@@ -56,15 +56,39 @@ namespace _3DChess {
 		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
 			throw new Exception("TODO");
 		}
-
-		public Bitmap DrawCurrentBoard(Vector2 size) {
-			return current.DrawWith(piecesDict, texturDict, size);
+		public ChessBoard SetCell(ChessBoard board, Vector2 cell, string piece) {
+			return board.SetCell(cell, piece);
 		}
 
-		public Vector2[] ParseVector2Array(dynamic x){
+		public void MakeMove(Vector2 from, Vector2 to){
+			current = MakeMove(current, from, to);
+		}
+		public void SetCell(Vector2 cell, string piece) {
+			pieces[cell.x, cell.y] = piece;
+			current = SetCell(current, cell, piece);
+		}
+		public string GetCell(Vector2 cell) {
+			return pieces[cell.x, cell.y];
+		}
+		public bool IsPiece(string id) => !IsNotPiece(id);
+		public bool IsNotPiece(string id) => id is null || id == string.Empty;
+
+		public Bitmap DrawBoard(ChessBoard board, Vector2 size) {
+			return board.DrawWith(piecesDict, texturDict, size);
+		}
+		public Bitmap DrawCurrentBoard(Vector2 size) {
+			return DrawBoard(current, size);
+		}
+
+		public Vector2[] ParseVector2Array(dynamic x) {
 			List<Vector2> res = new List<Vector2>();
 			foreach(dynamic y in x) res.Add((y[0], y[1]));
 			return res.ToArray();
+		}
+		public Vector2 GetRandomPiece() {
+			Vector2 cell = null;
+			while(cell is null || IsNotPiece(GetCell(cell))) cell = Vector2.Random(Vector2.Zero, boardSize);
+			return cell;
 		}
 	}
 }

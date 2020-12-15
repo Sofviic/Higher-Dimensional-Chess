@@ -3,8 +3,8 @@ using System.Drawing;
 
 namespace _3DChess {
 	class ChessBoard {
-		public Vector2 size;
-		public string[,] pieces;
+		public Vector2 size { get; private set; }
+		public string[,] pieces { get; private set; }
 		public ChessBoard(Vector2 size) {
 			pieces = new string[size.x, size.y];
 			this.size = size;
@@ -20,10 +20,21 @@ namespace _3DChess {
 		public Bitmap DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize) {
 			Bitmap res = BitmapFunc.SolidColour(100, 0, 0, bsize.x, bsize.y);
 			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) {
-					res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
-					if(!(pieces[i, j] is null) && pieces[i, j] != string.Empty && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
+					try {
+						res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
+					}catch{ }
+					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
 				}
 			return res;
 		}
+		public ChessBoard Copy() => new ChessBoard(size, pieces);
+		public ChessBoard SetCell(Vector2 cell, string piece) {
+			string[,] np = pieces;
+			np[cell.x, cell.y] = piece;
+			ChessBoard c = new ChessBoard(size, np);
+			return c;
+		}
+		public bool IsPiece(string id) => !IsNotPiece(id);
+		public bool IsNotPiece(string id) => id is null || id == string.Empty;
 	}
 }
