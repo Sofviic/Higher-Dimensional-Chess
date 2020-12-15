@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace _3DChess {
 	public partial class Form1 : Form {
-		Image board;
+		Bitmap board;
 		ChessEngine eng;
 		public Form1() {
 			InitializeComponent();
@@ -14,20 +14,38 @@ namespace _3DChess {
 			RedrawBoard();
 			Paint += Form1_Paint;
 			MouseDown += Form1_MouseDown;
-			MouseClick += Form1_MouseClick;
+			MouseUp += Form1_MouseUp;
+			MouseMove += Form1_MouseMove;
 		}
 
-		private void Form1_MouseClick(object sender, MouseEventArgs e) {
-			eng.SetCell(GetCellFromPos(e.Location), "");
+		bool holding = false;
+		string heldPiece = "";
+
+		private Bitmap RedrawBoard() {
+			return board = eng.DrawCurrentBoard((1200, 1200));
+		}
+
+		private void Form1_MouseDown(object sender, MouseEventArgs e) {
+			if(eng.IsPiece(eng.GetCell(GetCellFromPos(e.Location)))) {
+				holding = true;
+				heldPiece = eng.Hold(GetCellFromPos(e.Location));
+				RedrawBoard();
+				Refresh();
+			}
+		}
+
+		private void Form1_MouseUp(object sender, MouseEventArgs e) {
+			holding = false;
+			eng.Unhold();
 			RedrawBoard();
 			Refresh();
 		}
 
-		private void RedrawBoard() {
-			board = eng.DrawCurrentBoard((1200, 1200));
-		}
-
-		private void Form1_MouseDown(object sender, MouseEventArgs e) {
+		private void Form1_MouseMove(object sender, MouseEventArgs e) {
+			if(holding) {
+				board = RedrawBoard().Add(eng.piecesDict[heldPiece], e.Location, true);
+				Refresh();
+			}
 		}
 
 		private void Form1_Paint(object sender, PaintEventArgs e) {

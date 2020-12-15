@@ -72,9 +72,17 @@ namespace _3DChess {
 			current = SetCell(current, cell, piece);
 			Changed(cell);
 		}
-		public string GetCell(Vector2 cell) {
+		public string GetCell(Vector2 cell) => pieces[cell.x, cell.y];
+
+		bool holding = false;
+		Vector2 held;
+		public string Hold(Vector2 cell) {
+			holding = true;
+			held = cell;
 			return pieces[cell.x, cell.y];
 		}
+		public void Unhold() => holding = false;
+
 		public bool IsPiece(string id) => !IsNotPiece(id);
 		public bool IsNotPiece(string id) => id is null || id == string.Empty;
 
@@ -87,7 +95,7 @@ namespace _3DChess {
 				drawn = true;
 				return old = board.DrawWith(piecesDict, texturDict, size);
 			}
-			return board.DrawWith(piecesDict, texturDict, size, old, changes);
+			return holding ? board.DrawWith(piecesDict, texturDict, size, old, changes, held) : board.DrawWith(piecesDict, texturDict, size, old, changes);
 		}
 		public Bitmap DrawCurrentBoard(Vector2 size) {
 			return DrawBoard(current, size);

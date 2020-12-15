@@ -29,12 +29,22 @@ namespace _3DChess {
 		}
 		public Bitmap DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize, Bitmap old, bool[,] cells) {
 			Bitmap res = old;
-			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i,j]) {
-					try {
-						res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
-					} catch { }
-					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
-				}
+			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i, j]) {
+						try {
+							res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
+						} catch { }
+						if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
+					}
+			return res;
+		}
+		public Bitmap DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize, Bitmap old, bool[,] cells, Vector2 undraw) {
+			Bitmap res = old;
+			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i, j] || (i,j) == undraw) {
+						try {
+							res = res.Add(bboard[(i + j) % 2 == 1 ? "CB" : "CW"], (i, j) * bsize / size);
+						} catch { }
+						if((i,j) != undraw && IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) res = res.Add(bpieces[pieces[i, j]], (i, j) * bsize / size, bboard["CB"]);
+					}
 			return res;
 		}
 		public ChessBoard Copy() => new ChessBoard(size, pieces);
