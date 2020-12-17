@@ -1,7 +1,5 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -12,6 +10,8 @@ namespace _3DChess {
 		bool[,] changes;
 		dynamic pieceRules;
 		dynamic textures;
+
+		public int turn { get; private set; } = 0;
 
 		public Dictionary<string, (Bitmap, Vector2[], int)> piecesDict { get; private set; }
 		public Dictionary<string, Bitmap> texturDict { get; private set; }
@@ -56,14 +56,15 @@ namespace _3DChess {
 		public ChessBoard MakeMove(ChessBoard board, Vector2 from, Vector2 to) {
 			string piece = GetCell(from);
 			ChessBoard res = board;
-			if(IsPiece(piece)) {
+			if(IsPiece(piece) && (piece[1] == 'B').Iff(BlacksTurn())) {
 				for(int i = 1; i <= piecesDict[piece].Item3; ++i) {
 					foreach(Vector2 move in piecesDict[piece].Item2) {
-						if(from + i * move == to)  {
+						if(from + i * move == to) {
 							res = res.SetCell(from, null);
 							res = res.SetCell(to, piece);
 							Changed(from);
 							Changed(to);
+							turn++;
 							return res;
 						}
 					}
@@ -97,7 +98,7 @@ namespace _3DChess {
 
 		public bool IsPiece(string id) => !IsNotPiece(id);
 		public bool IsNotPiece(string id) => id is null || id == string.Empty;
-		
+
 		public void DrawBoard(ChessBoard board, Vector2 size, Graphics g) {
 			board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g);
 			if(holding) board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g, changes, held);
@@ -116,5 +117,7 @@ namespace _3DChess {
 			while(cell is null || IsNotPiece(GetCell(cell))) cell = Vector2.Random(Vector2.Zero, boardSize);
 			return cell;
 		}
+		public bool WhitesTurn() => turn % 2 == 0;
+		public bool BlacksTurn() => turn % 2 == 1;
 	}
 }

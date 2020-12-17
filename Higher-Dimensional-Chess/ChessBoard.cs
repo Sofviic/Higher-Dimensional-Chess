@@ -25,7 +25,9 @@ namespace _3DChess {
 					} catch { }
 					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) g.DrawImage(bpieces[pieces[i, j]], (i, j) * bsize / size - bpieces[pieces[i, j]].Centre(bboard["CB"]));
 				}
+#pragma warning disable CS0162 // Unreachable code detected
 			if(STUPIDITY) g.DrawImage(BitmapFunc.SolidColour(0, 0, 0, bsize.x, bsize.y), Vector2.Zero);
+#pragma warning restore CS0162 // Unreachable code detected
 		}
 		public void DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize, Graphics g, bool[,] cells) {
 			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i, j]) {

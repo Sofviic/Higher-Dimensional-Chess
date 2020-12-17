@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 using System.Windows.Forms;
 
 namespace _3DChess {
@@ -20,7 +19,7 @@ namespace _3DChess {
 
 		bool holding = false;
 		string heldPiece = "";
-		
+
 		private void Form1_MouseDown(object sender, MouseEventArgs e) {
 			if(!holding && eng.IsPiece(eng.GetCell(GetCellFromPos(e.Location)))) {
 				holding = true;
@@ -42,9 +41,11 @@ namespace _3DChess {
 			if(holding) Refresh();
 		}
 
+		Brush brush = new Pen(Color.Red).Brush;
 		private void Form1_Paint(object sender, PaintEventArgs e) {
 			eng.DrawCurrentBoard(size, e.Graphics);
 			if(holding) e.Graphics.DrawImage(eng.piecesDict[heldPiece].Item1, Centre(mouseLoc, eng.piecesDict[heldPiece].Item1));
+			e.Graphics.DrawString($"Turn: {eng.turn}\n{(eng.turn % 2 == 0 ? "White" : "Black")} to move", Font, brush, 0, 0);
 		}
 
 		private Vector2 GetCellFromPos(Vector2 pos) => pos * (8, 8) / Size;
