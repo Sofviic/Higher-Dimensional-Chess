@@ -90,7 +90,7 @@
 		"Name": "Knight",
 		"Royal": false,
 		"Movement": {
-			"Hops": 9999,
+			"Hops": 1,
 			"Move": [
 				[ -2, -1 ],
 				[ -2, 1 ],
