@@ -22,7 +22,7 @@ namespace _3DChess {
 			Bitmap bmp = new Bitmap(a.Width, a.Height);
 			using(Graphics gfx = Graphics.FromImage(bmp)) {
 				gfx.DrawImage(a, 0, 0);
-				gfx.DrawImage(b, (a.Width - b.Width) / 2, (a.Height - b.Height) / 2);
+				gfx.DrawImage(b, ((Vector2)(a.Size - b.Size) / 2).Clamp(Vector2.Zero, a.Size - b.Size));
 			}
 			return bmp;
 		}
@@ -37,7 +37,7 @@ namespace _3DChess {
 			Bitmap bmp = new Bitmap(a.Width, a.Height);
 			using(Graphics gfx = Graphics.FromImage(bmp)) {
 				gfx.DrawImage(a, 0, 0);
-				gfx.DrawImage(b, loc - (centred ? b.Centre() : (Vector2)(0, 0)));
+				gfx.DrawImage(b, (loc - (centred ? b.Centre() : Vector2.Zero)).Clamp(Vector2.Zero, a.Size - b.Size));
 			}
 			return bmp;
 		}
@@ -51,11 +51,11 @@ namespace _3DChess {
 			Bitmap bmp = new Bitmap(a.Width, a.Height);
 			using(Graphics gfx = Graphics.FromImage(bmp)) {
 				gfx.DrawImage(a, 0, 0);
-				gfx.DrawImage(b, loc + c.Centre() - b.Centre() - (centred ? b.Centre() : (Vector2)(0, 0)));
+				gfx.DrawImage(b, (loc + c.Centre() - b.Centre() - (centred ? b.Centre() : Vector2.Zero)).Clamp(Vector2.Zero, a.Size - b.Size));
 			}
 			return bmp;
 		}
-		public static Bitmap AddSkipNull(this Bitmap a, Bitmap b) => a is null ? (b is null ? null : b) : (b is null ? a : a.Add(b));
+		//public static Bitmap AddSkipNull(this Bitmap a, Bitmap b) => a is null ? (b is null ? null : b) : (b is null ? a : a.Add(b));
 		public static Vector2 Centre(this Bitmap a) => a is null ? null : (Vector2)(a.Width, a.Height) / 2;
 	}
 }

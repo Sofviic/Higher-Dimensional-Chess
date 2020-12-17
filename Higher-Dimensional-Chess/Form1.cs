@@ -4,14 +4,14 @@ using System.Windows.Forms;
 
 namespace _3DChess {
 	public partial class Form1 : Form {
-		Bitmap board;
 		ChessEngine eng;
+		Vector2 size = (1200, 1200);
 		public Form1() {
 			InitializeComponent();
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint | ControlStyles.OptimizedDoubleBuffer, true);
-			Size = new Size(1217, 1240);
+			Size = size + (17, 40);
 			eng = new ChessEngine((8, 8), @"D:\Users\abdul\source\repos\Higher-Dimensional-Chess\Higher-Dimensional-Chess\Pieces.json", @"D:\Users\abdul\source\repos\Higher-Dimensional-Chess\Higher-Dimensional-Chess\Board.json");
-			RedrawBoard();
+			Refresh();
 			Paint += Form1_Paint;
 			MouseDown += Form1_MouseDown;
 			MouseUp += Form1_MouseUp;
@@ -20,16 +20,11 @@ namespace _3DChess {
 
 		bool holding = false;
 		string heldPiece = "";
-
-		private Bitmap RedrawBoard() {
-			return board = eng.DrawCurrentBoard((1200, 1200));
-		}
-
+		
 		private void Form1_MouseDown(object sender, MouseEventArgs e) {
 			if(!holding && eng.IsPiece(eng.GetCell(GetCellFromPos(e.Location)))) {
 				holding = true;
 				heldPiece = eng.Hold(GetCellFromPos(e.Location));
-				RedrawBoard();
 				Refresh();
 			}
 		}
@@ -38,21 +33,22 @@ namespace _3DChess {
 			holding = false;
 			eng.MakeMoveFromHold(GetCellFromPos(e.Location));
 			eng.Unhold();
-			RedrawBoard();
 			Refresh();
 		}
 
+		Vector2 mouseLoc;
 		private void Form1_MouseMove(object sender, MouseEventArgs e) {
-			if(holding) {
-				board = RedrawBoard().Add(eng.piecesDict[heldPiece].Item1, e.Location, true);
-				Refresh();
-			}
+			mouseLoc = e.Location;
+			if(holding) Refresh();
 		}
 
 		private void Form1_Paint(object sender, PaintEventArgs e) {
-			e.Graphics.DrawImage(board, 0, 0);
+			eng.DrawCurrentBoard(size, e.Graphics);
+			if(holding) e.Graphics.DrawImage(eng.piecesDict[heldPiece].Item1, Centre(mouseLoc, eng.piecesDict[heldPiece].Item1));
 		}
 
 		private Vector2 GetCellFromPos(Vector2 pos) => pos * (8, 8) / Size;
+		private bool In(Vector2 pos, Rectangle rect) => rect.Right > pos.x && rect.Left < pos.x && rect.Top < pos.y && rect.Bottom > pos.y;
+		private Vector2 Centre(Vector2 pos, Bitmap b) => pos - b.Centre();
 	}
 }

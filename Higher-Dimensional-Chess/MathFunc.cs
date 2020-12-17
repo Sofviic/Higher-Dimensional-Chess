@@ -22,5 +22,7 @@ namespace _3DChess {
 		public static Vector2[] Neg(this Vector2[] a) => a.Select(x => x.Neg()).ToArray();
 
 		public static int Mod(this int a, int n) => ((a % n) + n) % n;
+		public static int Clamp(this int x, int a = int.MinValue, int b = int.MaxValue) => x < a ? a : x > b ? b : x;
+		public static Vector2 Clamp(this Vector2 x, Vector2 a, Vector2 b) => (x.x.Clamp(a.x, b.x), x.y.Clamp(a.y, b.y));
 	}
 }

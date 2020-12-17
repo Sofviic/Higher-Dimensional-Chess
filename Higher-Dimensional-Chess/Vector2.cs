@@ -2,6 +2,11 @@
 
 namespace _3DChess {
 	public class Vector2 {
+		public static readonly Vector2 MinValue = (int.MinValue, int.MinValue);
+		public static readonly Vector2 MaxValue = (int.MaxValue, int.MaxValue);
+		public static readonly Vector2 Zero = (0, 0);
+		public static readonly Vector2 One = (1, 1);
+
 		public int x, y;
 		public Vector2(int x = 0, int y = 0) => (this.x, this.y) = (x, y);
 		public static implicit operator Vector2((int, int) x) => new Vector2(x.Item1, x.Item2);
@@ -36,6 +41,7 @@ namespace _3DChess {
 		public Vector2 Over(int b) => (x / b, y / b);
 		public Vector2 Mod(int b) => (x.Mod(b), y.Mod(b));
 		public Vector2 Neg() => (-x, -y);
+		public int SqLength() => x * x + y * y;
 
 		public override bool Equals(object obj) => obj as Vector2 != null && x == (obj as Vector2).x && y == (obj as Vector2).y;
 		public override int GetHashCode() {
@@ -45,8 +51,6 @@ namespace _3DChess {
 			return hashCode;
 		}
 
-		public static readonly Vector2 Zero = (0, 0);
-		public static readonly Vector2 One = (1, 1);
 		public static Vector2 Random() => Random(One * int.MinValue, One * int.MaxValue);
 		public static Vector2 Random(Vector2 from) => Random(from, One * int.MaxValue);
 		public static Vector2 Random(Vector2 from, Vector2 to) => (MathFunc.Rand(from.x, to.x), MathFunc.Rand(from.y, to.y));

@@ -16,3 +16,4 @@
 
 A. Graphics
 	A.1. Responsiveness /
+	A.2. Solve "Out of memory issue" /

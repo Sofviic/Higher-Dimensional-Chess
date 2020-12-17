@@ -101,20 +101,14 @@ namespace _3DChess {
 
 		public bool IsPiece(string id) => !IsNotPiece(id);
 		public bool IsNotPiece(string id) => id is null || id == string.Empty;
-
-		bool drawn = false;
-		Bitmap old;
-
-		public void DumpDrawCache() => drawn = false;
-		public Bitmap DrawBoard(ChessBoard board, Vector2 size) {
-			if(!drawn) {
-				drawn = true;
-				return old = board.DrawWith(piecesDict.StripDictionary(), texturDict, size);
-			}
-			return holding ? board.DrawWith(piecesDict.StripDictionary(), texturDict, size, old, changes, held) : board.DrawWith(piecesDict.StripDictionary(), texturDict, size, old, changes);
+		
+		public void DrawBoard(ChessBoard board, Vector2 size, Graphics g) {
+			board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g);
+			if(holding) board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g, changes, held);
+			else board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g, changes);
 		}
-		public Bitmap DrawCurrentBoard(Vector2 size) {
-			return DrawBoard(current, size);
+		public void DrawCurrentBoard(Vector2 size, Graphics g) {
+			DrawBoard(current, size, g);
 		}
 		private void Changed(Vector2 cell) => changes[cell.x, cell.y] = true;
 
