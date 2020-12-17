@@ -56,7 +56,8 @@ namespace _3DChess {
 			return bmp;
 		}
 		//public static Bitmap AddSkipNull(this Bitmap a, Bitmap b) => a is null ? (b is null ? null : b) : (b is null ? a : a.Add(b));
-		public static Vector2 Centre(this Bitmap a) => a is null ? null : (Vector2)(a.Width, a.Height) / 2;
+		public static Vector2 Centre(this Bitmap a) => a is null ? null : (Vector2)a.Size / 2;
+		public static Vector2 Centre(this Bitmap a, Bitmap b) => b is null ? a.Centre() : a is null ? null : (Vector2)(a.Size - b.Size) / 2;
 	}
 }
 

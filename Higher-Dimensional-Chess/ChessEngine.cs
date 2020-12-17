@@ -69,21 +69,15 @@ namespace _3DChess {
 			}
 			return res;
 		}
-		public ChessBoard MakeMoveFromHold(ChessBoard board, Vector2 to) {
-			return MakeMove(board, held, to);
-		}
-		public ChessBoard SetCell(ChessBoard board, Vector2 cell, string piece) {
-			return board.SetCell(cell, piece);
-		}
+		public ChessBoard MakeMoveFromHold(ChessBoard board, Vector2 to) => MakeMove(board, held, to);
+		public ChessBoard SetCell(ChessBoard board, Vector2 cell, string piece) => board.SetCell(cell, piece);
 
 		public void MakeMove(Vector2 from, Vector2 to) {
 			current = MakeMove(current, from, to);
 			Changed(from);
 			Changed(to);
 		}
-		public void MakeMoveFromHold(Vector2 to) {
-			current = MakeMoveFromHold(current, to);
-		}
+		public void MakeMoveFromHold(Vector2 to) => current = MakeMoveFromHold(current, to);
 		public void SetCell(Vector2 cell, string piece) {
 			current = SetCell(current, cell, piece);
 			Changed(cell);
@@ -107,9 +101,7 @@ namespace _3DChess {
 			if(holding) board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g, changes, held);
 			else board.DrawWith(piecesDict.StripDictionary(), texturDict, size, g, changes);
 		}
-		public void DrawCurrentBoard(Vector2 size, Graphics g) {
-			DrawBoard(current, size, g);
-		}
+		public void DrawCurrentBoard(Vector2 size, Graphics g) => DrawBoard(current, size, g);
 		private void Changed(Vector2 cell) => changes[cell.x, cell.y] = true;
 
 		public Vector2[] ParseVector2Array(dynamic x) {
