@@ -57,13 +57,15 @@ namespace _3DChess {
 			string piece = GetCell(from);
 			ChessBoard res = board;
 			if(IsPiece(piece)) {
-				foreach(Vector2 move in piecesDict[piece].Item2) {
-					if(from + move == to) {
-						res = res.SetCell(from, null);
-						res = res.SetCell(to, piece);
-						Changed(from);
-						Changed(to);
-						return res;
+				for(int i = 1; i <= piecesDict[piece].Item3; ++i) {
+					foreach(Vector2 move in piecesDict[piece].Item2) {
+						if(from + i * move == to)  {
+							res = res.SetCell(from, null);
+							res = res.SetCell(to, piece);
+							Changed(from);
+							Changed(to);
+							return res;
+						}
 					}
 				}
 			}

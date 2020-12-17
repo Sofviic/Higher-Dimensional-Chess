@@ -23,6 +23,8 @@ namespace _3DChess {
 		public static Vector2 operator %(Vector2 a, Vector2 b) => a.Mod(b);
 		public static Vector2 operator *(Vector2 a, int b) => a.Times(b);
 		public static Vector2 operator /(Vector2 a, int b) => a.Over(b);
+		public static Vector2 operator *(int a, Vector2 b) => b.Times(a);
+		public static Vector2 operator /(int a, Vector2 b) => b.Over(a);
 		public static Vector2 operator %(Vector2 a, int b) => a.Mod(b);
 		public static Vector2 operator -(Vector2 a) => a.Neg();
 		public static bool operator ==(Vector2 a, Vector2 b) => a.x == b.x && a.y == b.y;

@@ -3,6 +3,7 @@ using System.Drawing;
 
 namespace _3DChess {
 	class ChessBoard {
+		public const bool STUPIDITY = false;
 		public Vector2 size { get; private set; }
 		public string[,] pieces { get; private set; }
 		public ChessBoard(Vector2 size) {
@@ -24,6 +25,7 @@ namespace _3DChess {
 					} catch { }
 					if(IsPiece(pieces[i, j]) && bpieces.ContainsKey(pieces[i, j])) g.DrawImage(bpieces[pieces[i, j]], (i, j) * bsize / size - bpieces[pieces[i, j]].Centre(bboard["CB"]));
 				}
+			if(STUPIDITY) g.DrawImage(BitmapFunc.SolidColour(0, 0, 0, bsize.x, bsize.y), Vector2.Zero);
 		}
 		public void DrawWith(Dictionary<string, Bitmap> bpieces, Dictionary<string, Bitmap> bboard, Vector2 bsize, Graphics g, bool[,] cells) {
 			for(int i = 0; i < size.x; ++i) for(int j = 0; j < size.y; ++j) if(cells[i, j]) {
